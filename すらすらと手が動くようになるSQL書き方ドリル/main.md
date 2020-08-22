@@ -611,3 +611,275 @@ WHERE SaleDate >= '2007-06-01'
 GROUP BY ProductID
 HAVING SUM(Quantity) >= 200;
 ```
+
+## 14/45 p106,107,108,109,110,110,111,112
+
+0.
+
+```
+SELECT HireFiscalYear AS '入社年度',
+    SUM(
+      CASE
+        WHEN BloodType = 'A' THEN 1
+        ELSE 0
+      END
+    ) AS 'A型',
+    SUM(
+      CASE
+        WHEN BloodType = 'B' THEN 1
+        ELSE 0
+      END
+    ) AS 'B型',
+    SUM(
+      CASE
+        WHEN BloodType = 'O' THEN 1
+        ELSE 0
+      END
+    ) AS 'O型',
+    SUM(
+      CASE
+        WHEN BloodType = 'AB' THEN 1
+        ELSE 0
+      END
+    ) AS 'AB型'
+FROM Employees
+GROUP BY HireFiscalYear;
+```
+
+1. 
+
+```
+SELECT HireFiscalYear AS '入社年度',
+    SUM(
+      CASE
+        WHEN Height <= 160 THEN 1
+        ELSE 0
+      END
+    ) AS '160cm以下',
+    SUM(
+      CASE 
+        WHEN Height <= 170 THEN 1
+        ELSE 0
+      END
+    ) AS '170cm以下',
+    SUM(
+      CASE
+        WHEN Height <= 180 THEN 1
+        ELSE 0 
+      END
+    ) AS '180cm以下',
+    SUM(
+      CASE
+        WHEN Height > 180 THEN 1
+        ELSE 0 
+      END
+    ) AS '180cm超'
+FROM Employees
+GROUP BY HireFiscalYear;
+```
+
+2.
+
+```
+SELECT CategoryID AS '商品カテゴリID', 
+    SUM(
+      CASE
+        WHEN Price < 100 THEN 1
+        ELSE 0
+      END
+    ) AS '100円未満',
+    SUM(
+      CASE
+        WHEN Price <400 THEN 1
+        ELSE 0
+      END
+    ) AS '400円未満',
+    SUM(
+      CASE
+        WHEN Price <1000 THEN 1
+        ELSE 0
+      END
+    ) AS '1000円未満',
+    SUM(
+      CASE
+        WHEN Price >= 1000 THEN 1
+        ELSE 0
+      END
+    ) AS '1000円以上'
+FROM Products
+GROUP BY CategoryID;
+```
+
+3.
+
+```
+SELECT CustomerID,
+    SUM(
+      CASE 
+        WHEN MONTH( SaleDate ) = 9 THEN 1
+        ELSE 0
+      END 
+    ) AS '9月',
+    SUM(
+      CASE 
+        WHEN MONTH( SaleDate ) = 10 THEN 1
+        ELSE 0 
+      END 
+    ) AS '10月',
+    SUM(
+      CASE 
+        WHEN MONTH( SaleDate ) = 11 THEN 1
+        ELSE 0 
+      END 
+    ) AS '11月'
+FROM Sales
+WHERE YEAR( SaleDate ) = 2006 
+GROUP BY CustomerID;
+```
+
+
+4.
+
+```
+SELECT PrefecturalID AS '都道府県ID',
+    COUNT(
+      CASE
+        WHEN CustomerClassID = 1 THEN 1
+        ELSE 0
+      END
+    ) AS '法人',
+    COUNT(
+      CASE
+        WHEN CustomerClassID = 2 THEN 1
+        ELSE 0
+      END
+    ) AS '個人'
+FROM Customers
+GROUP BY PrefecturalID
+```
+
+5.
+
+```
+SELECT HireFiscalYear AS '入社年度',
+    COUNT(
+      CASE
+        WHEN Weight <=50 THEN 1
+        ELSE 0
+      END
+    ) AS '50kg以下',
+    COUNT(
+      CASE Weight <= 60 THEN 1
+      END 0
+    ) AS '60kg以下',
+    COUNT(
+      CASE Weight <=80 THEN 1
+      END 0
+    ) AS '80kg以下',
+    COUNT(
+      CASE Weight >80 THEN 1
+      END 0
+    ) AS '80kg超'
+FROM Employees
+GROUP BY HireFiscalYear;
+```
+
+## 15/45 p118,119,120
+
+昇順(ASC)とは小さい順に並べること。降順(DESC)とは大きい順に並べること。
+
+1.
+
+```
+SELECT EmployeeID, EmployeeName, BirthDay
+FROM Employees
+ORDER BY BirthDay ASC
+```
+
+2.
+
+```
+SELECT SaleID, Quantity, CustomerID, ProductID, SaleDate
+FROM Sales
+ORDER BY ProductID,CustomerID, SaleDate DESC;
+```
+
+3.
+
+```
+SELECT CategoryID, count(＊) AS '商品数'
+FROM Products
+WHERE Price <= 1000
+GROUP BY CategoryID
+HAVING count(＊) < 5
+ORDER BY CategoryID;
+```
+
+4.
+
+```
+SELECT EmployeeID AS '社員ID', SUM(Amount) AS '給与合計'
+FROM Salary
+GROUP BY EmpoloyeeID
+ORDER BY SUM(Amount) DESC;
+```
+
+5.
+
+```
+SELECT DepartmentID AS '部署ID',count(Employee)
+FROM BelongTo
+WHERE EndDate IS NULL
+GROUP BY DepartmentID
+ORDER BY count(Employee) DESC;
+```
+
+## 16/45 p123,124,125
+
+0.
+
+```
+SELECT DISTINCT
+    Address AS '住所'
+FROM Customers;
+```
+
+1.
+
+```
+SELECT DISTINCT
+   HireFiscalYear
+FROM Employee;
+```
+
+2.
+
+```
+SELECT DISTINCT 
+    CustomerID, ProductID
+FROM Sales;
+```
+
+3.
+
+```
+SELECT DISTINCT
+    CustomerClassID, PrefecturalID
+FROM Customers;
+```
+
+4.
+
+```
+SELECT DISTINCT
+    CustomerID,ProductID,EmployeeID
+FROM Sales;
+```
+
+5.
+
+```
+SELECT DISTINCT 
+    Price,CategoryID
+FROM Products;    
+```
