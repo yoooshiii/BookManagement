@@ -85,20 +85,6 @@ WHERE Quantity >= 100;
 
 ### 18 / 45 p147,148,149,150
 
-0.
-
-```
-SELECT Customers.PrefectturalID, Prefectturals.PrefecturalName AS '都道府県', count(＊) AS '顧客数'
-FROM Customers
-    JOIN
-        Prefecturals
-    ON 
-        Customers.PrefecturalID = Prefecturals.PrefecturalID
-GROUP BY
-    Customers.PrefecturalID
-    ,Prefecturals.PrefecturalName;
-```
-
 1.
 
 ```
@@ -187,119 +173,115 @@ ORDER BY PrefecuturalID;
 
 ### 19 / 45 p 154,155,156,156.157
 
-0.
+1.答え合わせ　未
 
 ```
-SELECT d.DepartmentName AS '部門名', AVG(s.Amount) AS '部門別平均給与額'
-FROM Salary s
-    JOIN BelongTo b
-    ON s.EmployeeID = b.EmployeeID
-    JOIN Departments d
-    ON b.DepartmentID = d,DepartmentID
-    JOIN Employees e
-    ON b.EmployeeID = e.EmployeeID
-GROUP BY d.DepartmentName;
-```
-
-1.
-
-```
-SELECT s.CategoryID, c.CategoryName AS 'カテゴリ名', p.Quantity AS '数量合計'
+SELECT s.CategoryID, c.CategoryName AS 'カテゴリ名', SUM(p.Quantity) AS '数量合計'
 FROM Sales s
-    JOIN Products p
-    ON s.ProductID = p.ProductID
-    JOIN Categories c
-    ON s.CategoryID = c.Cattegory
-GROUP BY PrefecturalID;
+    JOIN 
+        Products p
+    ON
+        s.ProductID = p.ProductID
+    JOIN
+        Categories c
+    ON
+        s.CategorieID = c.CategorieID
+GROUP BY s.CategoryID;
 ```
 
-2.
+2.答え合わせ　未
 
 ```
-SELECT SUM(c.Quantity) AS '合計数量',s.PrefectturalID,p.PrefecturalName AS '県名'
+SELECT s.PrefecturalID, p.PrefecturalName AS '県名', SUM(c.Quantity) AS '合計数量'
 FROM Sales s
     JOIN Customers c
     ON s.CustomerID = c.CustomerID
-    JOIN Prefecturals p
-    ON p.PrefecturalID = s.PrefecturalID
-GROUP BY PrefecturalID    
+    JOIN Prefectural p
+    ON s.PrefecturalID = p.PrefecturalID
+GROUP BY s.PrefecturalID    
 ```
 
-3.
+3.答え合わせ　未
 
 ```
-SELECT MAX(c.Quantity) AS '最大数量',s.CustomerClassID,cc.CustomerClassName AS '顧客クラス名'
+SELECT s.CustomerClass ,cc.CustomerClassName AS '顧客クラス名',MAX(c.Quantity) AS '最大数量'
 FROM Sales s
     JOIN Customers c
-    ON s.CustomerID = s.CustomerID
+    ON s.CustomerID = c.CustomerID
     JOIN CustomerClasses cc
-    ON c.CustomerClassID = cc.CustomerClassID
-GROUP BY cc.CustomerID    
+    ON s.CustomerClassID = cc.CustomerClassID
+GROUP BY s.CustomerClassID
 ```
 
 4.
 
 ```
-SELECT PrefecturalID
-    ,SUM(Quantity IN (
-        SELECT c.Quantity
-        FROM Customers c
-        WHERE c.CustomerID = CustomerID
-    )) AS '合計数量'
-    ,PrefecturalName IN (
-        SELECT p.PrefecturalName
-        FROM Prefecturals p
-        WHERE p.PrefecturalID = PrefecturalID
+SELECT s.PrefecturalID
+     ,PrefecturalName IN (
+        SELECT PrefecturalName
+        FROM Prefectural
+        WHERE s.PrefecturalID = PrefecturalID
     ) AS '県名'
-FROM Sales
-GROUP BY PrefecturalID 
+    ,Quantity IN(
+        SELECT SUM(Quantity)
+        FROM Customers
+        WHERE s.CustomerID = CustomerID
+    ) AS '合計数量'
+FROM Sales s
+GROUP BY s.PrefecturalID;
 ```
 
 5.
 
 ```
-SELECT CustomerClassID
-    ,MAX(Quantity IN (
-        SELECT Quantity
-        FROM Customers c
-        WHERE c.CustomerID = CustomerID
-    )) AS '最大数量'
+SELECT s.CustomerClass
     ,CustomerClassName IN(
         SELECT CustomerClassName
-        FROM CustomerClasses cc
-        WHERE cc.CustomerClassesID = CustomerClasses
+        FROM CustomerClasses
+        WHERE CustomerClassID = s.CustomerClassID
     ) AS '顧客クラス名'
-FROM Sales
-GROUP BY CustomerID    
+    ,Quantity IN(
+        SELECT MAX(Quantity)
+        FROM Customers
+        WHERE s.CustomerID = CutomerID
+    ) AS '最大数量'
+FROM Sales s
+GROUP BY s.CustomerClassID
 ```
 
-### 20 / 45 p 163,164,165,166,167 (その4)
+### 20 / 45 p 163,164,165,166
 
 0.
 
 ```
-SELECT p.ProducttName
+SELECT p.ProductName
     ,AVG(
         p.Price *
         CASE
             WHEN s.Quantity IS NULL THEN 0
-            ELSE s.Quantity
+            ELSE s.Quantity 
         END
     ) AS '平均販売価格'
-FROM 
-        Product AS p
-    LEFT OUTER JOIN 
-            Sales AS s
-    ON
-            s.ProductID = p.ProductID
+FROM Products AS p
+LEFT OUTER JOIN Sales AS s
+ON s.ProductID = p.ProductID
 GROUP BY p.ProductName;
 ```
-
 
 1.
 
 ```
-
+SELECT CustomerName 
+    , SUM(s.Quantity *
+        CASE
+            WHEN c.CustomerID IS NULL THEN 0
+            ELSE c.CustomerID
+        END
+    ) AS '合計'
+FROM Customers c
+LEFT JOIN Sales s
+ON s.CustomerID = c.CustomerID
+GROUP BY CustomerID;
 ```
 
 2.
